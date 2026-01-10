@@ -22,4 +22,6 @@ public class ToolKit {
     public static final StringUtil STRING = new StringUtil();
     // 反射工具
     public static final ReflectUtil REFLECT = new ReflectUtil();
+    // JWT 工具
+    public static final JwtUtil JWT = new JwtUtil();
 }

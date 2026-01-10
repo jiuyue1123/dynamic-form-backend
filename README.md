@@ -39,11 +39,13 @@
 - **全局异常处理**：基于 `@RestControllerAdvice` 统一捕获异常，支持业务异常、系统异常、参数校验异常
 - **参数校验增强**：集成 `jakarta.validation`，支持自定义校验注解（手机号、身份证等）
 - **多环境配置**：完善的 dev/test/prod 环境隔离，支持配置文件拆分与组合
+- 全局 CORS 配置：通过WebMvcConfigurer配置跨域规则，支持自定义允许的域名、请求方法、请求头
 - **标准日志体系**：基于 Logback，支持控制台美化输出 + 文件滚动存储，集成 MDC 实现全链路 traceId 追踪
 - **接口文档**：集成 Knife4j (Swagger)，自动生成接口文档，支持在线调试
-- **工具类库**：集成 hutool-all 和内置常用工具类（日期、加密、JSON、集合、反射等），单元测试通过100%
+- **工具类库**：集成 hutool-all 和内置常用工具类（日期、加密、JSON、集合、反射、JWT等），单元测试通过100%
 - **应用监控**：集成 Spring Boot Actuator，提供健康检查和应用监控
 - **优雅停机**：支持优雅关闭，确保请求处理完成后再停止服务，仅处理 Web 容器，生产环境需手动关闭自定义资源（如线程池、消息队列消费者、定时任务），通过 `@PreDestroy` 或 `SmartLifecycle` 实现。
+- **跨域处理**：全局CORS配置，支持自定义允许的域名、请求方法、请求头
 
 ### 🔧 内置工具类
 
@@ -53,6 +55,7 @@
 - **StringUtil**：字符串处理工具
 - **CollectionUtil**：集合操作工具
 - **ReflectUtil**：反射工具类
+- **JwtUtil**：JWT令牌工具，支持访问令牌和刷新令牌的生成、验证、解析
 
 ### 📝 自定义验证器
 
@@ -65,6 +68,7 @@
 ```
 src/main/java/org/example/
 ├── config/                 # 配置类
+│   └── GlobalCorsConfig.java  # 全局跨域配置
 ├── constant/              # 常量定义
 ├── controller/            # 控制器层
 ├── enums/                 # 枚举类
@@ -81,6 +85,7 @@ src/main/java/org/example/
 │   ├── CryptoUtil.java
 │   ├── DateUtil.java
 │   ├── JsonUtil.java
+│   ├── JwtUtil.java
 │   ├── ReflectUtil.java
 │   ├── StringUtil.java
 │   └── ToolKit.java
@@ -208,6 +213,18 @@ String encrypted = ToolKit.CRYPTO.aesEncrypt("sensitive data");
 
 // 3. 生成随机验证码：通过 ToolKit.CRYPTO 调用
 String code = ToolKit.CRYPTO.randomCode(6);
+
+// 4. JWT令牌操作：通过 ToolKit.JWT 调用
+// 生成访问令牌（2小时有效期）
+String accessToken = ToolKit.JWT.generateAccessToken(userId);
+// 生成刷新令牌（7天有效期）
+String refreshToken = ToolKit.JWT.generateRefreshToken(userId);
+// 验证令牌
+boolean isValid = ToolKit.JWT.validateToken(accessToken);
+// 解析令牌获取载荷
+Map<String, Object> payload = ToolKit.JWT.parseToken(accessToken);
+// 刷新访问令牌
+String newAccessToken = ToolKit.JWT.refreshToken(refreshToken);
 ```
 
 ## 🚀 部署说明

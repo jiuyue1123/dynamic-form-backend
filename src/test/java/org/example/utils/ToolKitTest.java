@@ -79,6 +79,18 @@ class ToolKitTest {
     }
 
     @Test
+    void testJwtUtilInstance() {
+        // 验证JWT工具实例
+        assertNotNull(ToolKit.JWT);
+        assertTrue(ToolKit.JWT instanceof JwtUtil);
+        
+        // 测试功能
+        String token = ToolKit.JWT.generateAccessToken(12345L);
+        assertNotNull(token);
+        assertTrue(token.length() > 0);
+    }
+
+    @Test
     void testAllInstancesAreSingleton() {
         // 验证所有实例都是单例（同一个实例）
         assertSame(ToolKit.DATE, ToolKit.DATE);
@@ -87,6 +99,7 @@ class ToolKitTest {
         assertSame(ToolKit.COLLECTION, ToolKit.COLLECTION);
         assertSame(ToolKit.STRING, ToolKit.STRING);
         assertSame(ToolKit.REFLECT, ToolKit.REFLECT);
+        assertSame(ToolKit.JWT, ToolKit.JWT);
     }
 
     @Test
@@ -119,6 +132,11 @@ class ToolKitTest {
         String sensitive = StringUtil.sensitive("13812345678");
         assertNotNull(sensitive);
         assertNotEquals("13812345678", sensitive);
+        
+        // 7. 使用JWT工具
+        String jwtToken = ToolKit.JWT.generateAccessToken(12345L);
+        assertNotNull(jwtToken);
+        assertTrue(ToolKit.JWT.validateToken(jwtToken));
     }
 
     // 测试用的内部类
