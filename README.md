@@ -41,6 +41,7 @@
 - **多环境配置**：完善的 dev/test/prod 环境隔离，支持配置文件拆分与组合
 - 全局 CORS 配置：通过WebMvcConfigurer配置跨域规则，支持自定义允许的域名、请求方法、请求头
 - **标准日志体系**：基于 Logback，支持控制台美化输出 + 文件滚动存储，集成 MDC 实现全链路 traceId 追踪
+- **链路追踪**：TraceIdInterceptor 拦截器自动为每个请求生成唯一 traceId，通过 MDC 机制确保日志链路追踪
 - **接口文档**：集成 Knife4j (Swagger)，自动生成接口文档，支持在线调试
 - **工具类库**：集成 hutool-all 和内置常用工具类（日期、加密、JSON、集合、反射、JWT等），单元测试通过100%
 - **应用监控**：集成 Spring Boot Actuator，提供健康检查和应用监控
@@ -57,6 +58,10 @@
 - **ReflectUtil**：反射工具类
 - **JwtUtil**：JWT令牌工具，支持访问令牌和刷新令牌的生成、验证、解析
 
+### 🔍 链路追踪组件
+
+- **TraceIdInterceptor**：MDC链路追踪拦截器，自动生成和管理请求链路ID
+
 ### 📝 自定义验证器
 
 - **@Mobile**：手机号格式验证
@@ -68,7 +73,8 @@
 ```
 src/main/java/org/example/
 ├── config/                 # 配置类
-│   └── GlobalCorsConfig.java  # 全局跨域配置
+│   ├── GlobalCorsConfig.java  # 全局跨域配置config/                
+│   └── WebMvcConfig.java  # WebMvc配置
 ├── constant/              # 常量定义
 ├── controller/            # 控制器层
 ├── enums/                 # 枚举类
@@ -77,6 +83,8 @@ src/main/java/org/example/
 │   ├── BusinessException.java
 │   ├── GlobalExceptionHandler.java
 │   └── ThrowUtils.java
+├── interceptor/           # 拦截器
+│   └── TraceIdInterceptor.java  # MDC链路追踪拦截器
 ├── result/                # 响应结果封装
 │   ├── PageResult.java    # 分页结果
 │   └── Result.java        # 统一响应结果
@@ -141,6 +149,7 @@ java -jar target/springboot-template-0.0.1-SNAPSHOT.jar --spring.profiles.active
 - **文件输出**：`./logs/springboot-demo/app.log`
 - **错误日志**：`./logs/springboot-demo/error.log`
 - **日志滚动**：按日期和大小滚动，保留7天
+- **链路追踪**：每个请求自动生成唯一 traceId，所有日志自动携带，支持跨服务传递
 
 ### 加密配置
 
@@ -225,6 +234,46 @@ boolean isValid = ToolKit.JWT.validateToken(accessToken);
 Map<String, Object> payload = ToolKit.JWT.parseToken(accessToken);
 // 刷新访问令牌
 String newAccessToken = ToolKit.JWT.refreshToken(refreshToken);
+```
+
+### 链路追踪使用
+
+项目集成了 MDC 链路追踪，每个请求都会自动生成唯一的 traceId：
+
+```java
+// 在业务代码中，日志会自动携带 traceId
+@RestController
+public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+    
+    @GetMapping("/users/{id}")
+    public Result<User> getUser(@PathVariable Long id) {
+        // 日志会自动包含当前请求的 traceId
+        log.info("查询用户信息，用户ID: {}", id);
+        
+        // 业务逻辑...
+        User user = userService.findById(id);
+        
+        log.info("用户查询完成，用户名: {}", user.getName());
+        return Result.success(user);
+    }
+}
+
+// 跨服务调用时传递 traceId
+@Service
+public class ExternalService {
+    
+    public void callExternalApi() {
+        // 获取当前请求的 traceId
+        String traceId = MDC.get("traceId");
+        
+        // 在调用外部服务时传递 traceId
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("traceId", traceId);
+        
+        // 发起HTTP请求...
+    }
+}
 ```
 
 ## 🚀 部署说明
