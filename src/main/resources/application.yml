@@ -1,0 +1,25 @@
+spring:
+  profiles:
+    active: prod
+  application:
+    name: springboot-demo
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  shutdown: graceful
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn

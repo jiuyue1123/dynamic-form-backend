@@ -1,0 +1,10 @@
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+    threads:
+      max: 400 # 最大线程数,建议设置200-250倍cpu核心数
+      min-spare: 100
+    max-connections: 8192 # 最大连接数(大于max-threads+accept-count)
+    accept-count: 150
+    connection-timeout: 5000 # 5秒
