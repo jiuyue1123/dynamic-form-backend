@@ -19,6 +19,7 @@ public enum ErrorCode {
     UNAUTHORIZED(40100, "unauthenticated"),
     FORBIDDEN(40300, "forbidden"),
     NOT_FOUND(40400, "resource not found"),
+    OPERATION_ERROR(40500, "operation failed"),
     SERVER_ERROR(50000, "internal server error"),
     ;
 

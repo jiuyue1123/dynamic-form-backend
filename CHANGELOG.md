@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-12
+
+### Added
+- **AOP Framework Implementation**: Complete implementation of IdempotentAspect and TimeConsumingAspect
+- **Database Support**: Integrated MyBatis-Plus 3.5.15 ORM framework and Druid 1.2.27 connection pool
+- **Error Code Enhancement**: Added OPERATION_ERROR (40500) for operation failures
+- **Comprehensive Testing**: Added complete unit tests and integration tests for AOP functionality
+
+### Changed
+- **Spring Boot Version**: Downgraded from 4.0.1 to 3.5.9 for better stability and AOP compatibility
+- **Dependency Updates**: Updated Knife4j to 4.5.0 with dependency conflict resolution
+- **Web Starter**: Changed from spring-boot-starter-webmvc to spring-boot-starter-web
+- **Log Language**: Changed all log messages from Chinese to English for better internationalization
+
+### Fixed
+- **AOP Compatibility**: Resolved Spring Boot 4.0.1 AOP dependency compatibility issues
+- **Test Configuration**: Fixed AOP integration test bean registration issues
+- **Dependency Conflicts**: Resolved Knife4j and SpringDoc version conflicts
+
 ## [1.0.0] - 2026-01-12
 
 ### Added
@@ -60,4 +79,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AOP functionality temporarily disabled due to Spring Boot 4.0.1 compatibility issues
 - Alternative solutions documented for AOP requirements
 
+[1.1.0]: https://github.com/jiuyue1123/springboot-template/releases/tag/v1.1.0
 [1.0.0]: https://github.com/jiuyue1123/springboot-template/releases/tag/v1.0.0

@@ -1,11 +1,11 @@
 # Spring Boot 企业级脚手架
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.9-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
 [![Maven](https://img.shields.io/badge/Maven-3.6+-blue.svg)](https://maven.apache.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-一个基于 **Spring Boot 4.0.x** 构建的企业级通用后端脚手架，集成主流技术栈和最佳实践，帮助开发者快速搭建稳定、高效的业务系统。
+一个基于 **Spring Boot 3.5.x** 构建的企业级通用后端脚手架，集成主流技术栈和最佳实践，帮助开发者快速搭建稳定、高效的业务系统。
 
 ## 📋 目录
 
@@ -22,13 +22,15 @@
 
 | 技术 | 版本 | 说明     |
 |------|------|--------|
-| Spring Boot | 4.0.1 | 核心框架   |
+| Spring Boot | 3.5.9 | 核心框架   |
 | Java | 17 | JDK版本  |
 | Maven | 3.6+ | 项目管理   |
 | Lombok | Latest | 代码简化   |
 | Hutool | 5.8.38 | 工具类库   |
 | FastJSON2 | 2.0.60 | JSON处理 |
-| Knife4j | 4.4.0 | API文档  |
+| Knife4j | 4.5.0 | API文档  |
+| MyBatis-Plus | 3.5.15 | ORM框架 |
+| Druid | 1.2.27 | 数据库连接池 |
 | Logback | Latest | 日志框架   |
 
 ## ✨ 核心特性
@@ -48,6 +50,7 @@
 - **优雅停机**：支持优雅关闭，确保请求处理完成后再停止服务，仅处理 Web 容器，生产环境需手动关闭自定义资源（如线程池、消息队列消费者、定时任务），通过 `@PreDestroy` 或 `SmartLifecycle` 实现。
 - **跨域处理**：全局CORS配置，支持自定义允许的域名、请求方法、请求头
 - **异步处理**：集成自定义线程池配置，支持 @Async 异步方法调用，包含异常处理和优雅关闭
+- **数据库支持**：集成 MyBatis-Plus ORM 框架和 Druid 高性能数据库连接池，支持多数据源配置
 
 ### 🔧 内置工具类
 
@@ -67,10 +70,13 @@
 
 - **AsyncGlobalConfig**：自定义线程池配置，支持异步方法调用和异常处理
 
-### 🔄 AOP切面组件 (TODO)
+### 🔄 AOP切面组件
 
-- **@Idempotent**：幂等性注解，防止重复提交（待Spring Boot 4.0.1兼容性适配）
-- **@TimeConsuming**：方法耗时监控注解，记录方法执行时间（待Spring Boot 4.0.1兼容性适配）
+- **@Idempotent**：幂等性注解，防止重复提交，基于内存缓存实现（生产环境建议使用Redis）
+- **@TimeConsuming**：方法耗时监控注解，记录方法执行时间，超过阈值输出警告日志
+
+- **@Idempotent**：幂等性注解，防止重复提交（基于内存缓存实现）
+- **@TimeConsuming**：方法耗时监控注解，记录方法执行时间
 
 ### 📝 自定义验证器
 
@@ -112,7 +118,7 @@ src/main/java/org/example/
 ├── validator/             # 自定义验证器
 │   ├── annotation/        # 验证注解
 │   └── constraint/        # 验证器实现
-├── aop/                   # AOP切面 (TODO: 待Spring Boot 4.0.1兼容性适配)
+├── aop/                   # AOP切面
 │   ├── annotation/        # 自定义注解
 │   │   ├── Idempotent.java    # 幂等性注解
 │   │   └── TimeConsuming.java # 方法耗时注解
@@ -199,6 +205,9 @@ aes:
 - `GET /api/hello/error/runtime` - 运行时异常处理展示
 - `GET /api/hello/error/validation` - 参数校验异常展示
 - `GET /api/hello/trace` - 链路追踪功能展示
+- `POST /api/hello/idempotent` - 幂等性功能展示
+- `GET /api/hello/time-consuming` - 方法耗时监控展示
+- `POST /api/hello/aop-demo` - AOP综合功能演示
 - `GET /api/hello/health` - 健康检查接口
 
 ## 💻 开发指南
@@ -376,19 +385,110 @@ public class AsyncController {
 }
 ```
 
+### AOP切面使用
+
+项目集成了完整的 AOP 切面功能，支持幂等性控制和方法耗时监控：
+
+```java
+// 1. 幂等性控制 - 防止重复提交
+@Service
+public class OrderService {
+    
+    @Idempotent(value = "userId", message = "订单创建中，请勿重复提交")
+    public Result<String> createOrder(Long userId, OrderDTO order) {
+        // 业务逻辑处理
+        log.info("开始创建订单，用户ID: {}", userId);
+        
+        // 模拟订单创建
+        String orderId = "ORDER_" + System.currentTimeMillis();
+        
+        log.info("订单创建成功，订单ID: {}", orderId);
+        return Result.success(orderId);
+    }
+    
+    // 使用默认配置的幂等性控制
+    @Idempotent  // 默认5秒内防重复，基于所有参数生成唯一标识
+    public Result<String> updateOrderStatus(String orderId, String status) {
+        log.info("更新订单状态，订单ID: {}, 状态: {}", orderId, status);
+        return Result.success("状态更新成功");
+    }
+}
+
+// 2. 方法耗时监控
+@Service
+public class UserService {
+    
+    @TimeConsuming(threshold = 1000)  // 超过1秒输出警告
+    public List<User> queryUsers(UserQueryDTO query) {
+        log.info("开始查询用户列表");
+        
+        // 模拟数据库查询
+        try {
+            Thread.sleep(1200); // 模拟耗时操作
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        
+        log.info("用户列表查询完成");
+        return Arrays.asList(new User("张三"), new User("李四"));
+    }
+    
+    @TimeConsuming  // 使用默认阈值500ms
+    public User getUserById(Long userId) {
+        log.info("查询用户详情，用户ID: {}", userId);
+        return new User("用户" + userId);
+    }
+}
+
+// 3. 组合使用 AOP 功能
+@RestController
+public class BusinessController {
+    
+    @PostMapping("/business/process")
+    @Idempotent(value = "businessId", message = "业务处理中，请勿重复操作")
+    @TimeConsuming(threshold = 2000)
+    public Result<String> processBusinessData(@RequestParam String businessId, 
+                                            @RequestBody BusinessData data) {
+        log.info("开始处理业务数据，业务ID: {}", businessId);
+        
+        // 复杂业务处理逻辑
+        try {
+            // 第一阶段：数据验证
+            Thread.sleep(500);
+            log.info("数据验证完成");
+            
+            // 第二阶段：业务计算
+            Thread.sleep(1000);
+            log.info("业务计算完成");
+            
+            // 第三阶段：结果持久化
+            Thread.sleep(800);
+            log.info("数据持久化完成");
+            
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        
+        log.info("业务数据处理完成");
+        return Result.success("处理成功");
+    }
+}
+```
+
+**AOP 功能特点：**
+- **幂等性控制**：基于内存缓存实现，默认5秒防重复窗口，生产环境建议使用 Redis
+- **耗时监控**：自动记录方法执行时间，超过阈值输出警告日志，支持链路追踪集成
+- **灵活配置**：支持自定义参数标识、错误消息、时间阈值等
+- **无侵入性**：基于注解实现，不影响原有业务逻辑
+
 ## 🚀 部署说明
 
 ### ⚠️ 已知问题
 
-#### AOP功能兼容性 (TODO)
-由于Spring Boot 4.0.1版本的AOP依赖兼容性问题，以下功能暂时标记为TODO状态：
-- 幂等性切面 (`@Idempotent`)
-- 方法耗时监控切面 (`@TimeConsuming`)
-
-**解决方案**：
-1. 等待Spring Boot 4.0.x版本的AOP依赖稳定
-2. 或降级到Spring Boot 3.x版本使用完整AOP功能
-3. 或手动配置兼容的AspectJ版本
+**✅ AOP功能已完全实现并可正常使用**
+- 基于 Spring Boot 3.5.9 稳定版本，完全支持 AOP 切面编程
+- 幂等性控制和方法耗时监控功能正常工作
+- 包含完整的单元测试和集成测试覆盖
 
 ### 1. 打包应用
 
