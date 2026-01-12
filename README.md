@@ -67,6 +67,11 @@
 
 - **AsyncGlobalConfig**：自定义线程池配置，支持异步方法调用和异常处理
 
+### 🔄 AOP切面组件 (TODO)
+
+- **@Idempotent**：幂等性注解，防止重复提交（待Spring Boot 4.0.1兼容性适配）
+- **@TimeConsuming**：方法耗时监控注解，记录方法执行时间（待Spring Boot 4.0.1兼容性适配）
+
 ### 📝 自定义验证器
 
 - **@Mobile**：手机号格式验证
@@ -107,6 +112,13 @@ src/main/java/org/example/
 ├── validator/             # 自定义验证器
 │   ├── annotation/        # 验证注解
 │   └── constraint/        # 验证器实现
+├── aop/                   # AOP切面 (TODO: 待Spring Boot 4.0.1兼容性适配)
+│   ├── annotation/        # 自定义注解
+│   │   ├── Idempotent.java    # 幂等性注解
+│   │   └── TimeConsuming.java # 方法耗时注解
+│   └── aspect/            # 切面实现
+│       ├── IdempotentAspect.java    # 幂等性切面
+│       └── TimeConsumingAspect.java # 耗时监控切面
 └── SpringbootTemplateApplication.java
 ```
 
@@ -365,6 +377,18 @@ public class AsyncController {
 ```
 
 ## 🚀 部署说明
+
+### ⚠️ 已知问题
+
+#### AOP功能兼容性 (TODO)
+由于Spring Boot 4.0.1版本的AOP依赖兼容性问题，以下功能暂时标记为TODO状态：
+- 幂等性切面 (`@Idempotent`)
+- 方法耗时监控切面 (`@TimeConsuming`)
+
+**解决方案**：
+1. 等待Spring Boot 4.0.x版本的AOP依赖稳定
+2. 或降级到Spring Boot 3.x版本使用完整AOP功能
+3. 或手动配置兼容的AspectJ版本
 
 ### 1. 打包应用
 
