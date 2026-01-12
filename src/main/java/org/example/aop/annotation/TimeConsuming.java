@@ -8,13 +8,20 @@ import java.lang.annotation.Target;
 /**
  * @author nanak
  *
- * TODO 方法时间消耗注解
+ * 方法执行时间监控注解
+ * 
+ * 使用示例：
+ * @TimeConsuming(threshold = 1000)
+ * public Result<List<User>> queryUsers() {
+ *     // 业务逻辑
+ * }
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimeConsuming {
     /**
-     * 阈值,单位毫秒
+     * 执行时间阈值，单位毫秒
+     * 超过此阈值将输出警告日志
      */
     long threshold() default 500;
 }
