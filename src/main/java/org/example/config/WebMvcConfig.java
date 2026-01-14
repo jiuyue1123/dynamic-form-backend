@@ -3,6 +3,7 @@ package org.example.config;
 import jakarta.annotation.Resource;
 import org.example.interceptor.TraceIdInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -15,6 +16,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
     @Resource
     private TraceIdInterceptor traceIdInterceptor;
+    
+    @Resource
+    private StringToStatusEnumConverter stringToStatusEnumConverter;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -22,5 +26,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(traceIdInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/static/**", "/favicon.ico");
+    }
+    
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(stringToStatusEnumConverter);
     }
 }
