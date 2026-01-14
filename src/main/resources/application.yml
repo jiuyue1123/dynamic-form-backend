@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prod
+    active: dev
   application:
     name: springboot-demo
   lifecycle:
@@ -26,3 +26,7 @@ springdoc:
     operations-sorter: alpha
   api-docs:
     path: /v3/api-docs
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler

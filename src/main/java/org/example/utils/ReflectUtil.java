@@ -19,21 +19,21 @@ public class ReflectUtil {
     /**
      * 拷贝对象属性
      */
-    public static <T> T copyProperties(Object source, Class<T> target) {
+    public <T> T copyProperties(Object source, Class<T> target) {
         return BeanUtil.copyProperties(source, target);
     }
 
     /**
      * 复制对象属性(忽略指定属性)
      */
-    public static <T> T copyProperties(Object source, Class<T> target, String... ignoreProperties) {
+    public <T> T copyProperties(Object source, Class<T> target, String... ignoreProperties) {
         return BeanUtil.copyProperties(source, target, ignoreProperties);
     }
 
     /**
      * 获取对象中 null 值的属性名
      */
-    public static String[] getNullPropertyNames(Object source) {
+    public String[] getNullPropertyNames(Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
