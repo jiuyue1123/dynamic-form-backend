@@ -4,7 +4,7 @@ import org.example.enums.ErrorCode;
 
 /**
  * @author nanak
- *
+ * <p>
  * 抛异常工具类
  */
 public class ThrowUtils {
@@ -29,5 +29,16 @@ public class ThrowUtils {
      */
     public static void throwIf(boolean condition, ErrorCode errorCode) {
         throwIf(condition, new BusinessException(errorCode));
+    }
+
+    /**
+     * 条件成立则抛异常
+     *
+     * @param condition 条件
+     * @param errorCode 错误代码
+     * @param message   错误信息
+     */
+    public static void throwIf(boolean condition, ErrorCode errorCode, String message) {
+        throwIf(condition, new BusinessException(errorCode.getCode(), message));
     }
 }

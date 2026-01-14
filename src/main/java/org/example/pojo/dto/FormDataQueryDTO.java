@@ -1,7 +1,5 @@
-package org.example.pojo.entity;
+package org.example.pojo.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,19 +11,18 @@ import java.time.LocalDateTime;
 /**
  * @author nanak
  *
- * 表单数据实体
+ * 表单数据查询DTO
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FormData {
-    @TableId(type = IdType.AUTO)
-    private Long id;
+public class FormDataQueryDTO {
     private String formId;
     private String schemaVersion;
-    private String formDataJson;
-    private LocalDateTime submitTime;
     private StatusEnum status;
-    private String extInfo;
+    private LocalDateTime submitTimeStart;
+    private LocalDateTime submitTimeEnd;
+    private Integer pageNum;
+    private Integer pageSize;
 }

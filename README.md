@@ -1,528 +1,289 @@
-# Spring Boot 企业级脚手架
+# 动态表单设计器
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.9-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
-[![Maven](https://img.shields.io/badge/Maven-3.6+-blue.svg)](https://maven.apache.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+基于 Vue 3 + TypeScript + Element Plus 的可视化动态表单设计器，支持拖拽式表单构建和实时配置。
 
-一个基于 **Spring Boot 3.5.x** 构建的企业级通用后端脚手架，集成主流技术栈和最佳实践，帮助开发者快速搭建稳定、高效的业务系统。
+## 🚀 项目特色
 
-## 📋 目录
+### 📋 动态表单设计器
 
-- [技术栈](#-技术栈)
-- [核心特性](#-核心特性)
-- [项目结构](#-项目结构)
-- [快速开始](#-快速开始)
-- [配置说明](#-配置说明)
-- [API文档](#-api文档)
-- [开发指南](#-开发指南)
-- [部署说明](#-部署说明)
+- **可视化设计** - 拖拽式表单组件设计界面
+- **实时预览** - 所见即所得的表单预览功能
+- **JSON导出** - 标准化的表单配置JSON格式
+- **组件库** - 丰富的表单组件支持
 
-## 🛠 技术栈
+### 🎯 核心功能
 
-| 技术 | 版本 | 说明     |
-|------|------|--------|
-| Spring Boot | 3.5.9 | 核心框架   |
-| Java | 17 | JDK版本  |
-| Maven | 3.6+ | 项目管理   |
-| Lombok | Latest | 代码简化   |
-| Hutool | 5.8.38 | 工具类库   |
-| FastJSON2 | 2.0.60 | JSON处理 |
-| Knife4j | 4.5.0 | API文档  |
-| MyBatis-Plus | 3.5.15 | ORM框架 |
-| Druid | 1.2.27 | 数据库连接池 |
-| Logback | Latest | 日志框架   |
+#### 🖱️ 拖拽式设计
 
-## ✨ 核心特性
+- 从左侧组件库拖拽组件到设计区域
+- 支持组件的排序、复制、删除操作
+- 直观的可视化操作界面
 
-### 🔥 基础核心
+#### 🔧 组件配置
 
-- **统一结果封装**：全局统一的 `Result<T>` 响应格式，包含 code、message、data
-- **全局异常处理**：基于 `@RestControllerAdvice` 统一捕获异常，支持业务异常、系统异常、参数校验异常
-- **参数校验增强**：集成 `jakarta.validation`，支持自定义校验注解（手机号、身份证等）
-- **多环境配置**：完善的 dev/test/prod 环境隔离，支持配置文件拆分与组合
-- 全局 CORS 配置：通过WebMvcConfigurer配置跨域规则，支持自定义允许的域名、请求方法、请求头
-- **标准日志体系**：基于 Logback，支持控制台美化输出 + 文件滚动存储，集成 MDC 实现全链路 traceId 追踪
-- **链路追踪**：TraceIdInterceptor 拦截器自动为每个请求生成唯一 traceId，通过 MDC 机制确保日志链路追踪
-- **接口文档**：集成 Knife4j (Swagger)，自动生成接口文档，支持在线调试
-- **工具类库**：集成 hutool-all 和内置常用工具类（日期、加密、JSON、集合、反射、JWT等），单元测试通过100%
-- **应用监控**：集成 Spring Boot Actuator，提供健康检查和应用监控
-- **优雅停机**：支持优雅关闭，确保请求处理完成后再停止服务，仅处理 Web 容器，生产环境需手动关闭自定义资源（如线程池、消息队列消费者、定时任务），通过 `@PreDestroy` 或 `SmartLifecycle` 实现。
-- **跨域处理**：全局CORS配置，支持自定义允许的域名、请求方法、请求头
-- **异步处理**：集成自定义线程池配置，支持 @Async 异步方法调用，包含异常处理和优雅关闭
-- **数据库支持**：集成 MyBatis-Plus ORM 框架和 Druid 高性能数据库连接池，支持多数据源配置
+- **实时配置** - 右侧属性面板实时配置组件属性
+- **多种配置类型** - 支持输入框、开关、选择器、JSON编辑器等配置类型
+- **智能验证** - 配置项的实时验证和错误提示
 
-### 🔧 内置工具类
+#### 📝 表单组件
 
-- **JsonUtil**：基于 FastJSON2 的 JSON 序列化工具
-- **CryptoUtil**：加密工具类，支持 MD5、SHA256、AES 加密
-- **DateUtil**：日期时间处理工具
-- **StringUtil**：字符串处理工具
-- **CollectionUtil**：集合操作工具
-- **ReflectUtil**：反射工具类
-- **JwtUtil**：JWT令牌工具，支持访问令牌和刷新令牌的生成、验证、解析
+- **单行文本** - 支持前缀/后缀图标、占位符、验证规则
+- **多行文本** - 支持行数配置、自动调整大小
+- **扩展性** - 易于添加新的表单组件类型
 
-### 🔍 链路追踪组件
+#### 💾 数据管理
 
-- **TraceIdInterceptor**：MDC链路追踪拦截器，自动生成和管理请求链路ID
+- **JSON格式** - 标准化的表单配置数据结构
+- **导出功能** - 一键导出表单配置JSON
+- **预览模式** - 实时预览表单效果和数据收集
 
-### ⚡ 异步处理组件
+## 🛠️ 技术栈
 
-- **AsyncGlobalConfig**：自定义线程池配置，支持异步方法调用和异常处理
+- **Vue 3** - 渐进式 JavaScript 框架
+- **TypeScript** - 类型安全的 JavaScript 超集
+- **Element Plus** - Vue 3 企业级 UI 组件库
+- **Vite** - 下一代前端构建工具
+- **UnoCSS** - 即时原子 CSS 引擎
+- **Alova** - 轻量级数据请求库
+- **Pinia** - 轻量级状态管理
+- **ElegantRouter** - 文件路由管理
 
-### 🔄 AOP切面组件
+## ✨ 项目特性
 
-- **@Idempotent**：幂等性注解，防止重复提交，基于内存缓存实现（生产环境建议使用Redis）
-- **@TimeConsuming**：方法耗时监控注解，记录方法执行时间，超过阈值输出警告日志
+### 🎨 现代化 UI
 
-- **@Idempotent**：幂等性注解，防止重复提交（基于内存缓存实现）
-- **@TimeConsuming**：方法耗时监控注解，记录方法执行时间
+- **Element Plus** - 企业级组件库
+- **响应式设计** - 适配不同屏幕尺寸
+- **主题定制** - 支持主题色彩定制
+- **图标系统** - 丰富的图标库支持
 
-### 📝 自定义验证器
+### 🔐 类型安全
 
-- **@Mobile**：手机号格式验证
-- **@IdCard**：身份证号格式验证
-- 支持扩展更多自定义验证注解
+- **完整 TypeScript 支持** - 全项目类型覆盖
+- **智能提示** - 完善的代码智能提示
+- **类型检查** - 编译时类型错误检查
 
-## 📁 项目结构
+### 🚀 开发体验
 
-```
-src/main/java/org/example/
-├── config/                 # 配置类
-│   ├── AsyncGlobalConfig.java # 异步线程池配置
-│   ├── GlobalCorsConfig.java  # 全局跨域配置
-│   └── WebMvcConfig.java      # Web MVC配置（拦截器注册）
-├── constant/              # 常量定义
-├── controller/            # 控制器层
-│   └── HelloController.java   # 示例控制器（展示各种功能）
-├── enums/                 # 枚举类
-│   └── ErrorCode.java     # 错误码枚举
-├── exception/             # 异常处理
-│   ├── BusinessException.java
-│   ├── GlobalExceptionHandler.java
-│   └── ThrowUtils.java
-├── interceptor/           # 拦截器
-│   └── TraceIdInterceptor.java  # MDC链路追踪拦截器
-├── result/                # 响应结果封装
-│   ├── PageResult.java    # 分页结果
-│   └── Result.java        # 统一响应结果
-├── utils/                 # 工具类
-│   ├── CollectionUtil.java
-│   ├── CryptoUtil.java
-│   ├── DateUtil.java
-│   ├── JsonUtil.java
-│   ├── JwtUtil.java
-│   ├── ReflectUtil.java
-│   ├── StringUtil.java
-│   └── ToolKit.java
-├── validator/             # 自定义验证器
-│   ├── annotation/        # 验证注解
-│   └── constraint/        # 验证器实现
-├── aop/                   # AOP切面
-│   ├── annotation/        # 自定义注解
-│   │   ├── Idempotent.java    # 幂等性注解
-│   │   └── TimeConsuming.java # 方法耗时注解
-│   └── aspect/            # 切面实现
-│       ├── IdempotentAspect.java    # 幂等性切面
-│       └── TimeConsumingAspect.java # 耗时监控切面
-└── SpringbootTemplateApplication.java
-```
+- **热重载** - 开发时快速刷新
+- **代码规范** - ESLint + Prettier + Stylelint
+- **Git Hooks** - 提交前自动代码检查
+- **模块化配置** - 清晰的项目结构
 
 ## 🚀 快速开始
 
 ### 环境要求
 
-- JDK 17+
-- Maven 3.6+
+- Node.js >= 16
+- pnpm >= 7
 
-### 1. 克隆项目
-
-```bash
-git clone https://github.com/jiuyue1123/springboot-template
-cd springboot-template
-```
-
-### 2. 启动应用
+### 安装依赖
 
 ```bash
-# 开发环境启动
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-
-# 或者打包后启动
-mvn clean package
-java -jar target/springboot-template-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev
+pnpm install
 ```
 
-### 4. 访问应用
-- 应用地址：http://localhost:8081
-- API文档：http://localhost:8081/swagger-ui.html
-- 健康检查：http://localhost:8081/actuator/health
-- 示例接口：http://localhost:8081/api/hello
-
-## ⚙️ 配置说明
-
-### 环境配置
-
-项目支持多环境配置，通过 `spring.profiles.active` 切换：
-
-- **dev**：开发环境（端口8081，详细日志）
-- **test**：测试环境
-- **prod**：生产环境（端口8080，精简日志）
-
-### 日志配置
-
-- **控制台输出**：彩色格式，包含 traceId
-- **文件输出**：`./logs/springboot-demo/app.log`
-- **错误日志**：`./logs/springboot-demo/error.log`
-- **日志滚动**：按日期和大小滚动，保留7天
-- **链路追踪**：每个请求自动生成唯一 traceId，所有日志自动携带，支持跨服务传递
-
-### 加密配置
-
-在 `application.yml` 中配置 AES 密钥：
-
-```yaml
-aes:
-  key: xxxxxxxxxxxxxxxxx  # 16位密钥
-```
-
-## 📖 API文档
-
-项目集成了 Knife4j，提供美观的 API 文档界面：
-
-- 访问地址：http://localhost:8081/swagger-ui.html
-- 支持在线调试
-- 自动生成接口文档
-
-### 示例接口
-
-项目提供了完整的示例接口 `HelloController`，展示了所有核心功能：
-
-- `GET /api/hello` - 基础接口，展示统一响应格式和链路追踪
-- `GET /api/hello/tools` - 工具类功能展示
-- `POST /api/hello/validate` - 参数验证展示
-- `GET /api/hello/error/business` - 业务异常处理展示
-- `GET /api/hello/error/runtime` - 运行时异常处理展示
-- `GET /api/hello/error/validation` - 参数校验异常展示
-- `GET /api/hello/trace` - 链路追踪功能展示
-- `POST /api/hello/idempotent` - 幂等性功能展示
-- `GET /api/hello/time-consuming` - 方法耗时监控展示
-- `POST /api/hello/aop-demo` - AOP综合功能演示
-- `GET /api/hello/health` - 健康检查接口
-
-## 💻 开发指南
-
-### 统一响应格式
-
-```java
-// 成功响应
-return Result.success(data);
-return Result.success();
-
-// 错误响应
-return Result.error(ErrorCode.PARAMS_ERROR);
-return Result.error(40000, "参数错误");
-```
-
-### 异常处理
-
-```java
-// 抛出业务异常
-ThrowUtils.throwIf(condition, ErrorCode.PARAMS_ERROR);
-
-// 自定义业务异常
-throw new BusinessException(ErrorCode.PARAMS_ERROR, "详细错误信息");
-```
-
-### 参数验证
-
-```java
-public class UserDTO {
-    @Mobile(message = "手机号格式不正确")
-    private String phone;
-    
-    @IdCard(message = "身份证号格式不正确")
-    private String idCard;
-    
-    @NotBlank(message = "用户名不能为空")
-    private String username;
-}
-```
-
-### 工具类使用
-
-```java
-// 1. JSON 序列化与反序列化：通过 ToolKit.JSON 调用
-String json = ToolKit.JSON.toJsonString(object);
-User user = ToolKit.JSON.parseObject(json, User.class);
-
-// 2. 加密处理：通过 ToolKit.CRYPTO 调用
-// MD5 加密
-String md5 = ToolKit.CRYPTO.md5("password");
-// AES 加密（可自定义密钥）
-String encrypted = ToolKit.CRYPTO.aesEncrypt("sensitive data");
-
-// 3. 生成随机验证码：通过 ToolKit.CRYPTO 调用
-String code = ToolKit.CRYPTO.randomCode(6);
-
-// 4. JWT令牌操作：通过 ToolKit.JWT 调用
-// 生成访问令牌（2小时有效期）
-String accessToken = ToolKit.JWT.generateAccessToken(userId);
-// 生成刷新令牌（7天有效期）
-String refreshToken = ToolKit.JWT.generateRefreshToken(userId);
-// 验证令牌
-boolean isValid = ToolKit.JWT.validateToken(accessToken);
-// 解析令牌获取载荷
-Map<String, Object> payload = ToolKit.JWT.parseToken(accessToken);
-// 刷新访问令牌
-String newAccessToken = ToolKit.JWT.refreshToken(refreshToken);
-```
-
-### 链路追踪使用
-
-项目集成了 MDC 链路追踪，每个请求都会自动生成唯一的 traceId：
-
-```java
-// 在业务代码中，日志会自动携带 traceId
-@RestController
-public class UserController {
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    
-    @GetMapping("/users/{id}")
-    public Result<User> getUser(@PathVariable Long id) {
-        // 日志会自动包含当前请求的 traceId
-        log.info("查询用户信息，用户ID: {}", id);
-        
-        // 业务逻辑...
-        User user = userService.findById(id);
-        
-        log.info("用户查询完成，用户名: {}", user.getName());
-        return Result.success(user);
-    }
-}
-
-// 跨服务调用时传递 traceId
-@Service
-public class ExternalService {
-    
-    public void callExternalApi() {
-        // 获取当前请求的 traceId
-        String traceId = MDC.get("traceId");
-        
-        // 在调用外部服务时传递 traceId
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("traceId", traceId);
-        
-        // 发起HTTP请求...
-    }
-}
-```
-
-### 异步处理使用
-
-项目集成了自定义线程池配置，支持高效的异步方法调用：
-
-```java
-// 在Service类中使用异步方法
-@Service
-public class UserService {
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
-    
-    @Async
-    public void sendEmailAsync(String email, String content) {
-        // 异步发送邮件，不阻塞主线程
-        log.info("开始异步发送邮件到: {}", email);
-        
-        try {
-            // 模拟邮件发送耗时操作
-            Thread.sleep(2000);
-            log.info("邮件发送成功: {}", email);
-        } catch (Exception e) {
-            log.error("邮件发送失败: {}", email, e);
-            // 异常会被AsyncGlobalConfig中的异常处理器捕获
-        }
-    }
-    
-    @Async
-    public CompletableFuture<String> processDataAsync(String data) {
-        // 异步处理数据并返回结果
-        log.info("开始异步处理数据: {}", data);
-        
-        try {
-            // 模拟数据处理
-            Thread.sleep(1000);
-            String result = "处理完成: " + data;
-            log.info("数据处理完成: {}", result);
-            return CompletableFuture.completedFuture(result);
-        } catch (Exception e) {
-            log.error("数据处理失败: {}", data, e);
-            return CompletableFuture.failedFuture(e);
-        }
-    }
-}
-
-// 在Controller中调用异步方法
-@RestController
-public class AsyncController {
-    
-    @Autowired
-    private UserService userService;
-    
-    @PostMapping("/send-email")
-    public Result<String> sendEmail(@RequestParam String email) {
-        // 异步发送邮件，立即返回
-        userService.sendEmailAsync(email, "欢迎使用我们的服务！");
-        return Result.success("邮件发送请求已提交");
-    }
-    
-    @PostMapping("/process-data")
-    public Result<String> processData(@RequestParam String data) throws Exception {
-        // 异步处理数据并等待结果
-        CompletableFuture<String> future = userService.processDataAsync(data);
-        String result = future.get(5, TimeUnit.SECONDS); // 最多等待5秒
-        return Result.success(result);
-    }
-}
-```
-
-### AOP切面使用
-
-项目集成了完整的 AOP 切面功能，支持幂等性控制和方法耗时监控：
-
-```java
-// 1. 幂等性控制 - 防止重复提交
-@Service
-public class OrderService {
-    
-    @Idempotent(value = "userId", message = "订单创建中，请勿重复提交")
-    public Result<String> createOrder(Long userId, OrderDTO order) {
-        // 业务逻辑处理
-        log.info("开始创建订单，用户ID: {}", userId);
-        
-        // 模拟订单创建
-        String orderId = "ORDER_" + System.currentTimeMillis();
-        
-        log.info("订单创建成功，订单ID: {}", orderId);
-        return Result.success(orderId);
-    }
-    
-    // 使用默认配置的幂等性控制
-    @Idempotent  // 默认5秒内防重复，基于所有参数生成唯一标识
-    public Result<String> updateOrderStatus(String orderId, String status) {
-        log.info("更新订单状态，订单ID: {}, 状态: {}", orderId, status);
-        return Result.success("状态更新成功");
-    }
-}
-
-// 2. 方法耗时监控
-@Service
-public class UserService {
-    
-    @TimeConsuming(threshold = 1000)  // 超过1秒输出警告
-    public List<User> queryUsers(UserQueryDTO query) {
-        log.info("开始查询用户列表");
-        
-        // 模拟数据库查询
-        try {
-            Thread.sleep(1200); // 模拟耗时操作
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        
-        log.info("用户列表查询完成");
-        return Arrays.asList(new User("张三"), new User("李四"));
-    }
-    
-    @TimeConsuming  // 使用默认阈值500ms
-    public User getUserById(Long userId) {
-        log.info("查询用户详情，用户ID: {}", userId);
-        return new User("用户" + userId);
-    }
-}
-
-// 3. 组合使用 AOP 功能
-@RestController
-public class BusinessController {
-    
-    @PostMapping("/business/process")
-    @Idempotent(value = "businessId", message = "业务处理中，请勿重复操作")
-    @TimeConsuming(threshold = 2000)
-    public Result<String> processBusinessData(@RequestParam String businessId, 
-                                            @RequestBody BusinessData data) {
-        log.info("开始处理业务数据，业务ID: {}", businessId);
-        
-        // 复杂业务处理逻辑
-        try {
-            // 第一阶段：数据验证
-            Thread.sleep(500);
-            log.info("数据验证完成");
-            
-            // 第二阶段：业务计算
-            Thread.sleep(1000);
-            log.info("业务计算完成");
-            
-            // 第三阶段：结果持久化
-            Thread.sleep(800);
-            log.info("数据持久化完成");
-            
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        
-        log.info("业务数据处理完成");
-        return Result.success("处理成功");
-    }
-}
-```
-
-**AOP 功能特点：**
-- **幂等性控制**：基于内存缓存实现，默认5秒防重复窗口，生产环境建议使用 Redis
-- **耗时监控**：自动记录方法执行时间，超过阈值输出警告日志，支持链路追踪集成
-- **灵活配置**：支持自定义参数标识、错误消息、时间阈值等
-- **无侵入性**：基于注解实现，不影响原有业务逻辑
-
-## 🚀 部署说明
-
-### ⚠️ 已知问题
-
-**✅ AOP功能已完全实现并可正常使用**
-- 基于 Spring Boot 3.5.9 稳定版本，完全支持 AOP 切面编程
-- 幂等性控制和方法耗时监控功能正常工作
-- 包含完整的单元测试和集成测试覆盖
-
-### 1. 打包应用
+### 开发模式
 
 ```bash
-mvn clean package -Dmaven.test.skip=true
+pnpm dev
 ```
 
-### 2. 生产环境启动
+### 构建生产版本
 
 ```bash
-java -jar springboot-template-0.0.1-SNAPSHOT.jar \
-  --spring.profiles.active=prod \
-  --server.port=8080
+pnpm build
 ```
 
-### 3. Docker 部署
-
-```dockerfile
-FROM openjdk:17-jre-slim
-COPY target/springboot-template-0.0.1-SNAPSHOT.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar", "--spring.profiles.active=prod"]
-```
-
-### 4. 健康检查
+### 预览生产构建
 
 ```bash
-curl http://localhost:8080/actuator/health
+pnpm preview
 ```
+
+## 📁 项目结构
+
+```
+dynamic-form-designer/
+├── .husky/                    # Git hooks 配置
+├── .vscode/                   # VS Code 配置
+├── public/                    # 静态资源
+├── src/
+│   ├── components/           # 组件库
+│   │   ├── DynamicForm/     # 动态表单主组件
+│   │   │   └── index.vue    # 表单设计器主界面
+│   │   ├── DynamicFormComponent/ # 组件库面板
+│   │   │   └── index.vue    # 左侧组件库
+│   │   ├── DynamicFormConfig/    # 配置面板
+│   │   │   └── index.vue    # 右侧属性配置
+│   │   ├── FormInput.vue    # 单行文本组件
+│   │   └── FormTextarea.vue # 多行文本组件
+│   ├── service/             # 服务层
+│   │   ├── api/            # API 接口
+│   │   │   ├── auth.ts     # 认证接口
+│   │   │   ├── fieldComponent.ts      # 字段组件接口
+│   │   │   ├── fieldConfigSchema.ts  # 字段配置接口
+│   │   │   └── index.ts    # API 统一导出
+│   │   └── request/        # 请求配置
+│   ├── views/              # 页面组件
+│   │   ├── home/          # 首页
+│   │   ├── login/         # 登录页
+│   │   └── test/          # 测试页面
+│   ├── router/            # 路由配置
+│   ├── store/             # 状态管理
+│   ├── utils/             # 工具函数
+│   └── typings/           # 类型定义
+├── package.json           # 项目配置
+└── README.md             # 项目说明
+```
+
+## 🎯 核心组件说明
+
+### DynamicForm 主组件
+
+- **三栏布局** - 左侧组件库、中间设计区、右侧配置面板
+- **拖拽支持** - 完整的拖拽交互逻辑
+- **字段管理** - 表单字段的增删改查操作
+- **数据导出** - JSON格式的表单配置导出
+
+### DynamicFormComponent 组件库
+
+- **分类展示** - 基础组件和高级组件分类
+- **拖拽源** - 支持拖拽到设计区域
+- **图标展示** - 直观的组件图标和描述
+
+### DynamicFormConfig 配置面板
+
+- **动态配置** - 根据组件类型动态显示配置项
+- **实时更新** - 配置变更实时反映到表单字段
+- **多种配置类型** - 输入框、开关、选择器、JSON编辑器等
+
+### 表单组件
+
+- **FormInput** - 单行文本输入组件
+- **FormTextarea** - 多行文本输入组件
+- **扩展性** - 易于添加新的表单组件类型
+
+## 📊 数据结构
+
+### 表单字段配置格式
+
+```json
+{
+  "id": "1127085317824533",
+  "title": "姓名",
+  "type": "input",
+  "showLabel": true,
+  "placeholder": "请输入姓名",
+  "tips": true,
+  "description": "请输入真实姓名",
+  "readable": true,
+  "editable": true,
+  "fieldWidth": 1.0,
+  "prefixIcon": "el-icon-user",
+  "suffixIcon": "",
+  "rules": {
+    "required": false,
+    "message": "请输入姓名",
+    "trigger": "blur",
+    "max": 100,
+    "maxMessage": "姓名长度不能超过100个字符",
+    "min": 1,
+    "minMessage": "姓名长度不能少于1个字符",
+    "pattern": "^[\\u4e00-\\u9fa5a-zA-Z·\\s]+$",
+    "patternMessage": "姓名仅支持中文、字母、点和空格，请勿输入特殊字符"
+  },
+  "defaultValue": ""
+}
+```
+
+## 🔧 开发指南
+
+### 添加新的表单组件
+
+1. 在 `src/components/` 下创建新组件
+2. 在 `src/main.ts` 中注册全局组件
+3. 在 `DynamicForm` 的 `getFieldComponent` 方法中添加映射
+4. 在后端配置对应的组件类型和配置项
+
+### 自定义配置项
+
+1. 在后端 `FieldConfigSchema` 中定义新的配置项
+2. 在 `DynamicFormConfig` 组件中添加对应的配置UI
+3. 在表单组件中使用配置项
+
+### API 接口扩展
+
+1. 在 `src/service/api/` 下添加新的接口文件
+2. 定义 TypeScript 类型
+3. 在 `index.ts` 中统一导出
+
+## 🚀 开发命令
+
+```bash
+# 安装依赖
+pnpm install
+
+# 开发模式
+pnpm dev
+
+# 生产模式
+pnpm dev:prod
+
+# 构建生产版本
+pnpm build
+
+# 预览生产构建
+pnpm preview
+
+# 代码检查
+pnpm lint
+
+# 代码修复
+pnpm lint:fix
+
+# 提交代码
+pnpm commit
+```
+
+## 🎨 功能演示
+
+### 基本使用流程
+
+1. **选择组件** - 从左侧组件库选择需要的表单组件
+2. **拖拽设计** - 将组件拖拽到中间设计区域
+3. **配置属性** - 在右侧配置面板设置组件属性
+4. **预览表单** - 点击预览按钮查看表单效果
+5. **导出配置** - 导出JSON格式的表单配置
+
+### 支持的操作
+
+- ✅ 拖拽添加组件
+- ✅ 字段排序（上移/下移）
+- ✅ 字段复制
+- ✅ 字段删除
+- ✅ 实时属性配置
+- ✅ 表单预览
+- ✅ JSON导出
+- ✅ 表单清空
+
+## 🤝 贡献指南
+
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 打开 Pull Request
 
 ## 📄 许可证
 
-本项目采用 MIT 许可证。
+MIT License - 详见 [LICENSE](LICENSE) 文件
 
-## 🤝 贡献
+## 🙏 致谢
 
-欢迎提交 Issue 和 Pull Request 来改进这个项目！
+感谢以下开源项目：
+
+- [Vue.js](https://vuejs.org/)
+- [Element Plus](https://element-plus.org/)
+- [Vite](https://vitejs.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
